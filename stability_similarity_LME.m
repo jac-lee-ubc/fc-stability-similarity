@@ -9,7 +9,6 @@
 %  Requirements:
 %   - 'all_results' is a {subj x 1} cell array that contains subject data:
 %       all_results{s}.out.<fieldname>
-%   - MATLAB (fitlme, coefTest)
 % ============================================================
 
 %% -------------------------------
