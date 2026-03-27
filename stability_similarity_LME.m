@@ -6,11 +6,6 @@
 %   - Stability ~ Similarity * BrainType + Age + Sex + RMSD
 %              + (Similarity | Subject) + (1 | Site)
 %
-%  Notes:
-%   - SB slope is not a single coefficient in the model; it is a linear
-%     combination: Similarity + (BrainType_SB:Similarity). We compute its
-%     estimate, SE, and p-value using a model-based contrast.
-%
 %  Requirements:
 %   - 'all_results' is a {subj x 1} cell array that contains subject data:
 %       all_results{s}.out.<fieldname>
@@ -96,7 +91,7 @@ RMSD_z       = z(RMSD_long);
 Sex_cat = categorical(Sex_long, [0 1], {'Male','Female'});
 
 %% -------------------------------
-% 5) Build analysis table and drop missing values
+% 5) Build analysis table 
 % -------------------------------
 
 tbl = table(Subject, Site, BrainType, Stability_z, Similarity_z, Age_z, Sex_cat, RMSD_z, ...
@@ -104,12 +99,6 @@ tbl = table(Subject, Site, BrainType, Stability_z, Similarity_z, Age_z, Sex_cat,
 
 % Set reference level for BrainType (WB is baseline)
 tbl.BrainType = reordercats(tbl.BrainType, ["WB","SB"]);
-
-% Drop rows with missing data in variables used by the model
-keep = isfinite(tbl.Stability) & isfinite(tbl.Similarity) & isfinite(tbl.Age) & ...
-       isfinite(tbl.RMSD) & ~isundefined(tbl.Sex) & ~isundefined(tbl.Site);
-
-tbl = tbl(keep, :);
 
 %% -------------------------------
 % 6) Fit linear mixed-effects model (REML)
@@ -121,7 +110,7 @@ form = ['Stability ~ Similarity*BrainType + Age + Sex + RMSD ' ...
 lme = fitlme(tbl, form, 'FitMethod','REML');
 
 %% -------------------------------
-% 7) Extract WB slope and SB−WB slope difference from coefficient table
+% 7) Extract WB slope and SB−WB slope difference 
 % -------------------------------
 
 T  = lme.Coefficients;
@@ -142,7 +131,7 @@ se_diff  = T.SE(diff_row);
 p_diff   = T.pValue(diff_row);
 
 %% -------------------------------
-% 8) Compute SB slope via a linear contrast (Similarity + BrainType_SB:Similarity)
+% 8) Compute SB slope via a linear contrast 
 % -------------------------------
 
 iSim   = find(wb_row,   1);
@@ -156,7 +145,7 @@ est_SB = C_SB * beta;
 se_SB  = sqrt(C_SB * V * C_SB');
 ci_SB  = est_SB + [-1 1]*1.96*se_SB;
 
-% Hypothesis test: H0 (SB slope = 0)
+% H0 (SB slope = 0)
 [p_SB, F_SB, df1_SB, df2_SB] = coefTest(lme, C_SB, 0);
 
 %% -------------------------------
