@@ -104,7 +104,7 @@ tbl.BrainType = reordercats(tbl.BrainType, ["WB","SB"]);
 % -------------------------------
 
 form = ['Stability ~ Similarity*BrainType + Age + Sex + RMSD ' ...
-        '+ (Similarity|Subject) + (1|Site)'];
+        '+ (1|Subject) + (1|Site)'];
 
 lme = fitlme(tbl, form, 'FitMethod','REML');
 
