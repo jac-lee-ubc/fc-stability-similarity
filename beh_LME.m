@@ -53,7 +53,7 @@ idx = (1:S)';
 T = table;
 T.Subject = categorical([idx; idx]);
 T.Brain   = categorical([zeros(nSubj,1); ones(nSubj,1)], [0 1], {'WB','SB'});
-T.FC      = [WB_stab_z; SB_stab_z];
+T.Stab      = [WB_stab_z; SB_stab_z];
 T.Age     = [Age_z; Age_z];
 T.MeanSim = [WB_meanSim_z; SB_meanSim_z];
 T.Sex     = [Sex; Sex];
@@ -67,5 +67,5 @@ T.Brain = reordercats(T.Brain, {'WB','SB'});
 % 3) Fit LME 
 % -------------------------------
 lme = fitlme(T, ...
-    'FC ~ Age*Brain + MeanSim + Sex + Motion + (1|Site) + (1|Subject)', ...
+    'Stab ~ Age*Brain + MeanSim + Sex + Motion + (1|Site) + (1|Subject)', ...
     'FitMethod', 'REML');
