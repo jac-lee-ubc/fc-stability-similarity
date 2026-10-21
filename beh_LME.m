@@ -4,7 +4,7 @@
 %
 %  Model:
 %   - Stability ~ Age * BrainType + MeanSim + Sex + RMSD
-%              + (Age| Subject) + (1 | Site)
+%              + (1| Subject) + (1 | Site)
 %
 %  Requirements:
 %   - 'all_results' is a {subj x 1} cell array that contains subject data:
